@@ -74,6 +74,9 @@ class Produit
     #[Groups(['produit.read', 'produit.write'])]
     private ?string $price = null;
 
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $img = null;
+
     public function __construct()
     {
         $this->specifications = new ArrayCollection();
@@ -193,6 +196,18 @@ class Produit
     public function setPrice(string $price): self
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getImg(): ?string
+    {
+        return $this->img;
+    }
+
+    public function setImg(?string $img): self
+    {
+        $this->img = $img;
 
         return $this;
     }
