@@ -5,3 +5,7 @@ controllers:
 kernel:
     resource: ../src/Kernel.php
     type: annotation
+
+api_doc:
+    path: /api_documentation
+    controller: api_platform.swagger_ui.action
