@@ -17,6 +17,12 @@ framework:
     php_errors:
         log: true
 
+    assets:
+        base_path: '/docs' # the default
+        packages:
+            api_platform:
+                base_path: '/'
+
 when@test:
     framework:
         test: true
