@@ -46,7 +46,6 @@ class CatProduit
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Assert\Blank]
     #[Groups(['catproduit.read', 'catproduit.write'])]
     private ?string $description = null;
 

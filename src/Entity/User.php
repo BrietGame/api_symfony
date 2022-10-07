@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\GetUserByEmailController;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,6 +26,20 @@ use Symfony\Component\Validator\Constraints as Assert;
                 'groups' => ['user.read']
             ]
         ],
+        'GETByEmail' => [
+            'method' => 'GET',
+            'path' => '/users/email/{email}',
+            'parameters' => [
+                [
+                    "name" => "email",
+                    "in" => "path",
+                    "required" => true,
+                    "type" => "string",
+                    "description" => "The email of the user"
+                ]
+            ],
+            'controller' => GetUserByEmailController::class,
+        ],
         'PUT' => [
             'method' => 'PUT',
             'normalization_context' => [
@@ -43,6 +58,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Assert\NotBlank]
+    #[Groups(['user.read', 'panier.read', 'panier.write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]

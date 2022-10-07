@@ -27,7 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         'GET' => [
             'method' => 'GET',
             'normalization_context' => [
-                'groups' => ['produit.read']
+                'groups' => ['produit.read', 'panier.read']
             ]
         ],
         'PUT' => [
@@ -39,19 +39,20 @@ use Symfony\Component\Validator\Constraints as Assert;
         'delete',
 
     ],
-    denormalizationContext: ['groups' => ['produit.write']],
-    normalizationContext: ['groups' => ['produit.read']],
+    denormalizationContext: ['groups' => ['produit.write', 'panier.write']],
+    normalizationContext: ['groups' => ['produit.read', 'panier.read']],
 )]
 class Produit
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['produit.read'])]
+    #[Groups(['produit.read', 'panier.read', 'panier.write'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::GUID)]
     #[Assert\Uuid]
+//    #[Groups(['produit.read', 'panier.read', 'panier.write'])]
     private ?string $uuid = null;
 
     #[ORM\Column(length: 255)]

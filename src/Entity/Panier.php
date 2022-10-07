@@ -3,6 +3,9 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\AddPanierByUserController;
+use App\Controller\GetPanierByUserController;
+use App\Controller\UpdatePanierByUserController;
 use App\Repository\PanierRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,24 +16,55 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PanierRepository::class)]
 #[ApiResource(
-    collectionOperations: ['GET', 'POST'],
+    collectionOperations: [
+        'GET' => [
+            'method' => 'GET',
+            'path' => '/carts',
+        ],
+        'POST' => [
+            'method' => 'POST',
+            'path' => '/cart/add',
+            'controller' => AddPanierByUserController::class,
+            'denormalization_context' => [
+                'groups' => ['panier.write', 'produit.write']
+            ],
+        ],
+        'PUT' => [
+            'method' => 'PUT',
+            'path' => '/cart/update/{userId}',
+            'controller' => UpdatePanierByUserController::class,
+            'denormalization_context' => [
+                'groups' => ['panier.write', 'produit.write']
+            ],
+            'parameters' => [
+                'userId' => [
+                    'type' => 'string',
+                    'required' => true,
+                    'description' => 'User ID'
+                ]
+            ]
+        ],
+    ],
     itemOperations: [
         'GET' => [
             'method' => 'GET',
+            'path' => '/cart/{id}',
+            'controller' => GetPanierByUserController::class,
             'normalization_context' => [
                 'groups' => ['panier.read']
             ]
         ],
-        'PUT' => [
-            'method' => 'PUT',
-            'normalization_context' => [
-                'groups' => ['panier.write']
-            ]
-        ],
-        'delete'
+        'delete' => [
+            'method' => 'DELETE',
+            'path' => '/cart/{id}'
+        ]
     ],
-    denormalizationContext: ['groups' => ['panier.write']],
-    normalizationContext: ['groups' => ['panier.read']]
+    attributes: [
+        'denormalization_context' => ['groups' => ['panier.write']],
+        'normalization_context' => ['groups' => ['panier.read']]
+    ],
+    denormalizationContext: ['groups' => ['panier.write', 'produit.write']],
+    normalizationContext: ['groups' => ['panier.read', 'produit.read']],
 )]
 class Panier
 {
@@ -52,7 +86,7 @@ class Panier
     #[Groups(['panier.read', 'panier.write'])]
     private ?User $userId = null;
 
-    #[ORM\ManyToMany(targetEntity: Produit::class, inversedBy: 'paniers')]
+    #[ORM\ManyToMany(targetEntity: Produit::class, inversedBy: 'paniers', cascade: ['persist', 'remove'])]
     #[Assert\NotBlank]
     #[Groups(['panier.read', 'panier.write'])]
     private Collection $produits;

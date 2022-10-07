@@ -57,7 +57,6 @@ class Adress
     private ?string $city = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Assert\Blank]
     #[Groups(['adress.read', 'adress.write'])]
     private ?string $state = null;
 
